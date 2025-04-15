@@ -1,5 +1,5 @@
 #!/bin/bash 
 
 . /opt/intel/oneapi/setvars.sh
-. /app/venv/bin/activate
+# . /app/venv/bin/activate
 exec "$@"
