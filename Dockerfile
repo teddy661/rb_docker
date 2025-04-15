@@ -7,7 +7,6 @@ ARG XGB_VERSION=3.0.0
 
 FROM ebrown/python:${PY_VERSION} AS built_python
 FROM ebrown/git:latest AS built_git
-FROM ebrown/xgboost:${XGB_VERSION} AS built_xgboost
 FROM nvidia/cuda:12.4.1-cudnn-devel-rockylinux9 AS base
 SHELL ["/bin/bash", "-c"]
 
@@ -65,13 +64,12 @@ RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa \
     && ssh-keygen -f /etc/ssh/ssh_host_ed25519_key -N '' -t ed25519
 COPY --from=built_python /opt/python/py${PY_THREE_DIGIT} /opt/python/py${PY_THREE_DIGIT}
 COPY --from=built_git /opt/git /opt/git
-ARG XGB_VERSION=3.0.0
-COPY --from=built_xgboost /tmp/bxgboost/xgboost/python-package/xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl /tmp/xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
 ENV LD_LIBRARY_PATH=/opt/python/py${PY_THREE_DIGIT}/lib:${LD_LIBRARY_PATH}
 ENV PATH=/opt/git/bin:/opt/python/py${PY_THREE_DIGIT}/bin:${PATH}
 ENV PYDEVD_DISABLE_FILE_VALIDATION=1
 WORKDIR /tmp
 COPY installmkl.sh ./installmkl.sh
+COPY xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl ./xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
 COPY numpy-2.2.4-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./numpy-2.2.4-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
 COPY scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
 RUN ./installmkl.sh
