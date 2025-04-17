@@ -7,7 +7,8 @@ ARG XGB_VERSION=3.0.0
 
 FROM ebrown/python:${PY_VERSION} AS built_python
 FROM ebrown/git:latest AS built_git
-FROM nvidia/cuda:12.4.1-cudnn-devel-rockylinux9 AS base
+## FROM nvidia/cuda:12.4.1-cudnn-devel-rockylinux9 AS base
+FROM rockylinux:9.3 AS base
 SHELL ["/bin/bash", "-c"]
 
 ARG PY_VERSION=3.13.3
