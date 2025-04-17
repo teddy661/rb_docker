@@ -110,6 +110,7 @@ RUN pip3 install --no-cache-dir \
                 ipyparallel \
                 ipywidgets \
                 nbconvert \
+                itables \
                 jupyter_bokeh \
                 jupyter-server-proxy \
                 jupyter_http_over_ws \
