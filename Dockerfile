@@ -75,7 +75,8 @@ COPY scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./sci
 RUN ./installmkl.sh
 RUN pip3 install --no-cache-dir /tmp/numpy-2.2.4-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
 RUN pip3 install --no-cache-dir \
-                torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124 \
+                torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124 
+RUN pip3 install --no-cache-dir \
                 ipython \
                 bokeh \
                 seaborn \
