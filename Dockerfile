@@ -71,10 +71,10 @@ ENV PYDEVD_DISABLE_FILE_VALIDATION=1
 WORKDIR /tmp
 COPY installmkl.sh ./installmkl.sh
 COPY xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl ./xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
-COPY numpy-2.2.4-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./numpy-2.2.4-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
+COPY numpy-2.2.5-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./numpy-2.2.5-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
 COPY scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
 RUN ./installmkl.sh
-RUN pip3 install --no-cache-dir /tmp/numpy-2.2.4-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
+RUN pip3 install --no-cache-dir /tmp/numpy-2.2.5-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
 RUN pip3 install --no-cache-dir \
                 torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124 
 RUN pip3 install --no-cache-dir \
