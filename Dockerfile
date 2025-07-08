@@ -1,9 +1,9 @@
 ##
 ## Production Image Below
-ARG PY_VERSION=3.13.3
+ARG PY_VERSION=3.13.5
 ARG PY_THREE_DIGIT=313
 ARG PY_SHORT=3.13
-ARG XGB_VERSION=3.0.0
+ARG XGB_VERSION=3.0.2
 
 FROM ebrown/python:${PY_VERSION} AS built_python
 FROM ebrown/git:latest AS built_git
@@ -11,10 +11,13 @@ FROM ebrown/git:latest AS built_git
 FROM rockylinux:9.3 AS base
 SHELL ["/bin/bash", "-c"]
 
-ARG PY_VERSION=3.13.3
+ARG PY_VERSION=3.13.5
 ARG PY_THREE_DIGIT=313
 ARG PY_SHORT=3.13
-ARG XGB_VERSION=3.0.0
+ARG XGB_VERSION=3.0.2
+ARG INSTALL_NODE_VERSION=22.17.0
+ARG INSTALL_NUMPY_VERSION=2.3.1
+ARG INSTALL_SCIPY_VERSION=1.16.0
 ## 
 ## TensorRT drags in a bunch of dependencies that we don't need
 ## tried replacing it with lean runtime, but that didn't work
@@ -49,7 +52,6 @@ RUN yum install dnf-plugins-core -y && \
                 procps-ng \
                 findutils -y && \
                 dnf clean all;
-ARG INSTALL_NODE_VERSION=22.14.0
 RUN mkdir /opt/nodejs && \
     cd /opt/nodejs && \
     curl -L https://nodejs.org/dist/v${INSTALL_NODE_VERSION}/node-v${INSTALL_NODE_VERSION}-linux-x64.tar.xz | xzcat | tar -xf - && \
@@ -70,11 +72,11 @@ ENV PATH=/opt/git/bin:/opt/python/py${PY_THREE_DIGIT}/bin:${PATH}
 ENV PYDEVD_DISABLE_FILE_VALIDATION=1
 WORKDIR /tmp
 COPY installmkl.sh ./installmkl.sh
-COPY xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl ./xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
-COPY numpy-2.2.5-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./numpy-2.2.5-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
-COPY scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
+COPY --from=ebrown/xgboost:latest /tmp/bxgboost/xgboost/python-package/xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl ./xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
+COPY --from=ebrown/mkl-numpy-scipy:latest /tmp/numpy/numpy/dist/numpy-${INSTALL_NUMPY_VERSION}-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./numpy-${INSTALL_NUMPY_VERSION}-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
+COPY --from=ebrown/mkl-numpy-scipy:latest /tmp/scipy/scipy/dist/scipy-${INSTALL_SCIPY_VERSION}-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl ./scipy-${INSTALL_SCIPY_VERSION}-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl
 RUN ./installmkl.sh
-RUN pip3 install --no-cache-dir /tmp/numpy-2.2.5-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/scipy-1.15.2-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
+RUN pip3 install --no-cache-dir /tmp/numpy-${INSTALL_NUMPY_VERSION}-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/scipy-${INSTALL_SCIPY_VERSION}-cp${PY_THREE_DIGIT}-cp${PY_THREE_DIGIT}-linux_x86_64.whl /tmp/xgboost-${XGB_VERSION}-py3-none-manylinux_2_34_x86_64.whl
 RUN pip3 install --no-cache-dir \
                 torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124 
 RUN pip3 install --no-cache-dir \
