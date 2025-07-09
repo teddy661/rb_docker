@@ -97,7 +97,9 @@ RUN pip3 install --no-cache-dir \
                 statsmodels \
                 psutil \
                 mypy \
-                "pandas[performance, excel, computation, plot, output_formatting, html, parquet, hdf5]" \
+                # "pandas[performance, excel, computation, plot, output_formatting, html, parquet, hdf5]" \
+                # Remove performance since that includes numba which downgrades numpy
+                "pandas" \
                 "polars[async,deltalake,excel,fsspec,graph,numpy,pandas,plot,pyarrow,pydantic,style,timezone]" \
                 apsw \
                 pydot \
